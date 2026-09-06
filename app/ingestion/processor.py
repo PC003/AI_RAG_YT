@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Callable, Optional
 from app.ingestion.playlist import extract_playlist_metadata as extract_playlist
 from app.ingestion.downloader import download_audio
-from app.ingestion.transcriber import transcribe, transcript_exists, load_transcript
+from app.ingestion.transcriber import transcribe, transcript_exists
 from app.chunking.chunker import chunk_transcript
 from app.embeddings.embedder import get_embedder
 from app.vectorstore.qdrant_store import QdrantStore
@@ -71,16 +71,22 @@ def _process_video(
 ) -> None:
     """Process a single video through the full pipeline."""
     # Skip if already fully indexed
-    if transcript_exists(video.video_id) and store.video_indexed(video.video_id):
+    if transcript_exists(video.video_id) and store.video_indexed(video.video_id, video.playlist_id):
         logger.info("Skipping already indexed video: %s", video.title)
         stats.videos_skipped += 1
         return
 
     # Download audio
-    audio_path = download_audio(video.video_id, video.webpage_url)
+    audio_path = download_audio(video.webpage_url, video.video_id)
+    if audio_path is None:
+        raise RuntimeError(f"Failed to download audio for {video.video_id}")
 
     # Transcribe
     transcript = transcribe(audio_path, video.video_id, video.title)
+    if transcript is None:
+        raise RuntimeError(f"Failed to transcribe {video.video_id}")
+    transcript.playlist_id = video.playlist_id
+    transcript.playlist_title = video.playlist_title
 
     # Chunk
     chunks = chunk_transcript(transcript, video)

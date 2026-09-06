@@ -61,10 +61,8 @@ def transcribe_audio(audio_path: Path, video_id: str, video_title: str) -> Optio
     try:
         model = _get_whisper_model()
 
-        # Transcribe
         result = model.transcribe(str(audio_path))
 
-        # Convert to our schema
         segments = []
         for seg in result.get("segments", []):
             segments.append(TranscriptSegment(
@@ -80,7 +78,6 @@ def transcribe_audio(audio_path: Path, video_id: str, video_title: str) -> Optio
             segments=segments
         )
 
-        # Save to disk
         with open(transcript_path, 'w', encoding='utf-8') as f:
             f.write(transcript.model_dump_json(indent=2))
 
@@ -90,3 +87,28 @@ def transcribe_audio(audio_path: Path, video_id: str, video_title: str) -> Optio
     except Exception as e:
         logger.error(f"Error transcribing {video_id}: {e}")
         return None
+
+
+def transcript_exists(video_id: str) -> bool:
+    """Return whether a saved transcript exists for a video."""
+    return (TRANSCRIPTS_DIR / f"{video_id}.json").exists()
+
+
+def load_transcript(video_id: str) -> Optional[Transcript]:
+    """Load a saved transcript if present."""
+    transcript_path = TRANSCRIPTS_DIR / f"{video_id}.json"
+    if not transcript_path.exists():
+        return None
+
+    try:
+        with open(transcript_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return Transcript(**data)
+    except Exception as e:
+        logger.warning(f"Failed to load transcript for {video_id}: {e}")
+        return None
+
+
+def transcribe(audio_path: Path, video_id: str, video_title: str) -> Optional[Transcript]:
+    """Compatibility wrapper used by the ingestion processor."""
+    return transcribe_audio(audio_path, video_id, video_title)

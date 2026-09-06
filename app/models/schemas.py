@@ -10,6 +10,8 @@ class VideoMetadata(BaseModel):
     video_id: str
     title: str
     webpage_url: str
+    playlist_id: Optional[str] = None
+    playlist_title: Optional[str] = None
     duration: Optional[float] = None
     uploader: Optional[str] = None
     channel: Optional[str] = None
@@ -29,6 +31,8 @@ class Transcript(BaseModel):
     """Full transcript for a video."""
     video_id: str
     video_title: str
+    playlist_id: Optional[str] = None
+    playlist_title: Optional[str] = None
     language: Optional[str] = None
     segments: list[TranscriptSegment] = Field(default_factory=list)
 
@@ -36,6 +40,8 @@ class Transcript(BaseModel):
 class Chunk(BaseModel):
     """A text chunk with timestamp and source metadata."""
     chunk_id: str
+    playlist_id: Optional[str] = None
+    playlist_title: Optional[str] = None
     video_id: str
     video_title: str
     text: str
@@ -55,6 +61,8 @@ class Source(BaseModel):
     """A source reference shown in the final answer."""
     video_title: str
     video_id: str
+    playlist_id: Optional[str] = None
+    playlist_title: Optional[str] = None
     start_time: float
     end_time: float
     youtube_url: str

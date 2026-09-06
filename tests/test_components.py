@@ -65,6 +65,33 @@ def test_chunking_preserves_timestamps():
         assert "youtube.com" in chunk.youtube_url
 
 
+def test_chunking_carries_playlist_metadata():
+    """Test that chunks include playlist information for filtered retrieval."""
+    metadata = VideoMetadata(
+        video_id="test1",
+        title="Test Video",
+        webpage_url="http://youtube.com/watch?v=test1",
+        playlist_id="PL_TEST",
+        playlist_title="Test Playlist",
+        playlist_index=1
+    )
+
+    transcript = Transcript(
+        video_id="test1",
+        video_title="Test Video",
+        segments=[
+            TranscriptSegment(start=0.0, end=5.0, text="First segment"),
+            TranscriptSegment(start=5.0, end=10.0, text="Second segment"),
+        ]
+    )
+
+    chunks = chunk_transcript(transcript, metadata)
+
+    assert len(chunks) == 1
+    assert chunks[0].playlist_id == "PL_TEST"
+    assert chunks[0].playlist_title == "Test Playlist"
+
+
 def test_chunking_empty_transcript():
     """Test handling of empty transcript."""
     metadata = VideoMetadata(

@@ -52,6 +52,8 @@ def format_sources(chunks: List[RetrievedChunk]) -> List[Source]:
         sources.append(Source(
             video_title=chunk.video_title,
             video_id=chunk.video_id,
+            playlist_id=chunk.playlist_id,
+            playlist_title=chunk.playlist_title,
             start_time=chunk.start_time,
             end_time=chunk.end_time,
             youtube_url=chunk.youtube_url,

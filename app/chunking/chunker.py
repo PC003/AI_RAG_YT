@@ -53,6 +53,8 @@ def chunk_transcript(transcript: Transcript, metadata: VideoMetadata = None, chu
 
             chunk = Chunk(
                 chunk_id=chunk_id,
+                playlist_id=metadata.playlist_id if metadata else transcript.playlist_id,
+                playlist_title=metadata.playlist_title if metadata else transcript.playlist_title,
                 video_id=transcript.video_id,
                 video_title=transcript.video_title,
                 text=current_chunk_text.strip(),
@@ -87,3 +89,8 @@ def chunk_transcript(transcript: Transcript, metadata: VideoMetadata = None, chu
 
     logger.info(f"Created {len(chunks)} chunks for {transcript.video_id}")
     return chunks
+
+
+def create_chunks(transcript: Transcript, metadata: VideoMetadata = None) -> List[Chunk]:
+    """Compatibility wrapper used by the main orchestrator."""
+    return chunk_transcript(transcript, metadata)

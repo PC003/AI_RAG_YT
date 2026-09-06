@@ -53,23 +53,28 @@ sudo apt update && sudo apt install ffmpeg
    ```
    Edit `.env` as needed.
 
-3. **Install Ollama (Optional, default):**
+3. **Start Qdrant with Docker:**
+   ```bash
+   docker compose up -d qdrant
+   ```
+
+   Qdrant stores data persistently in `data/qdrant`, so recreating the
+   container will not delete your indexed playlists.
+
+4. **Install Ollama (Optional, default):**
    If you use the default `ollama` provider for the LLM step:
    - Download [Ollama](https://ollama.ai/)
    - Run `ollama pull llama3`
-
-4. **Vector Store:**
-   The default configuration saves Qdrant DB points locally (or you can spin up a Qdrant Docker container on `localhost:6333`).
 
 ## ⚙️ Running the App
 
 Start the Streamlit UI:
 ```bash
-streamlit run app/main.py
+streamlit run app/ui.py
 ```
 
-1. Go to the **Ingest Playlist** tab and paste a YouTube Playlist URL. Watch the progress bar as it downloads, transcribes, embeds, and indexes. (Note: large playlists take time!)
-2. Go to the **Chat** tab to ask questions. You will get grounded answers and clickable YouTube links that open the video at the exact timestamp where the context was discussed.
+1. Go to the **Ingest Playlist** tab and paste a YouTube Playlist URL. Watch the progress bar as it downloads, transcribes, embeds, and indexes. Large playlists take time.
+2. Go to the **Chat** tab, choose **All playlists** or one playlist, and ask questions. You will get grounded answers and clickable YouTube links that open the video at the exact timestamp where the context was discussed.
 
 ## 🧪 Testing
 

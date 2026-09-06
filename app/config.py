@@ -32,7 +32,7 @@ EMBEDDING_MODEL: str = _get("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM
 # --- Qdrant ---
 QDRANT_URL: str = _get("QDRANT_URL", "http://localhost:6333")
 QDRANT_API_KEY: str = _get("QDRANT_API_KEY", "")
-QDRANT_COLLECTION: str = _get("QDRANT_COLLECTION", "youtube_rag")
+QDRANT_COLLECTION: str = _get("QDRANT_COLLECTION", "youtube_chunks")
 
 # --- Chunking ---
 CHUNK_SIZE: int = int(_get("CHUNK_SIZE", "500"))

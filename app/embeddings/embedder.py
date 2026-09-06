@@ -42,3 +42,8 @@ def get_embedder() -> Embedder:
     if _embedder is None:
         _embedder = Embedder()
     return _embedder
+
+
+def embed_texts(texts: list[str]) -> list[list[float]]:
+    """Compatibility helper for modules that expect a function-based embedder."""
+    return get_embedder().embed(texts)

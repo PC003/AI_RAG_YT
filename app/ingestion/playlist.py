@@ -33,10 +33,14 @@ def extract_playlist_metadata(playlist_url: str) -> List[VideoMetadata]:
                 logger.error("Could not extract playlist information.")
                 return []
 
+            playlist_id = info.get('id')
+            playlist_title = info.get('title')
             entries = info.get('entries', [])
             if not entries:
                 # Might be a single video URL, not a playlist
                 entries = [info]
+                playlist_id = playlist_id or info.get('id')
+                playlist_title = playlist_title or info.get('title')
 
             for idx, entry in enumerate(entries):
                 if not entry:
@@ -53,6 +57,8 @@ def extract_playlist_metadata(playlist_url: str) -> List[VideoMetadata]:
                     video_id=video_id,
                     title=title,
                     webpage_url=entry.get('url') or f"https://www.youtube.com/watch?v={video_id}",
+                    playlist_id=playlist_id,
+                    playlist_title=playlist_title,
                     duration=entry.get('duration'),
                     uploader=entry.get('uploader'),
                     channel=entry.get('channel'),
