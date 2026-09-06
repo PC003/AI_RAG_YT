@@ -4,7 +4,7 @@ A complete end-to-end system for running a Retrieval-Augmented Generation (RAG) 
 
 ## 🏗 Architecture
 
-```mermaid
+```
 flowchart TD
     A[YouTube Playlist URL] --> B[yt-dlp: Extract Metadata]
     B --> C[yt-dlp: Download Audio]
